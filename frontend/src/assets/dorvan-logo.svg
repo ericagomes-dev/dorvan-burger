@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="250" height="58" viewBox="0 0 250 58" fill="none">
+  <title>Dorvan Burger</title>
+  <rect x="1" y="1" width="55" height="55" rx="8" fill="#171717" stroke="#F26A21" stroke-width="2"/>
+  <path d="M13 27C13 19.82 18.82 14 26 14C33.18 14 39 19.82 39 27H13Z" fill="#F26A21"/>
+  <path d="M12 31H40V35C40 38.31 37.31 41 34 41H18C14.69 41 12 38.31 12 35V31Z" fill="#F5F1E8"/>
+  <path d="M17 27H35M18 35H34" stroke="#171717" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M23 18L24 19M29 18L30 19" stroke="#F5F1E8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M45 20C42 23 42 26 45 29" stroke="#F26A21" stroke-width="2" stroke-linecap="round"/>
+  <text x="68" y="29" fill="#F5F1E8" font-family="Impact, 'Arial Narrow', sans-serif" font-size="25" font-weight="900" letter-spacing="1.8">DORVAN</text>
+  <text x="69" y="47" fill="#F26A21" font-family="Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="4">BURGER</text>
+</svg>
