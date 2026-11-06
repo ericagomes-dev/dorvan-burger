@@ -1,75 +1,37 @@
 ﻿# 🍔 Dorvan Burger
 
-Uma experiência digital de hamburgueria com cardápio interativo, personalização de produtos e pedidos online.
+Uma experiência digital de hamburgueria que une praticidade, tecnologia e uma experiência de compra intuitiva.
 
-Projeto de portfólio desenvolvido para demonstrar habilidades em desenvolvimento Front-End, experiência do usuário e integração com backend.
+O Dorvan Burger é um projeto web com cardápio interativo, personalização de produtos e sistema de pedidos online, desenvolvido com foco em responsividade e experiência do usuário (UX/UI).
 
 ## ✨ Funcionalidades
 
-- Cardápio organizado por categorias.
-- Imagens e descrições dos produtos.
+- Cardápio digital organizado por categorias.
+- Apresentação visual dos produtos.
 - Personalização de hambúrgueres e acompanhamentos.
-- Carrinho de compras.
+- Carrinho de compras interativo.
 - Checkout com dados do cliente e endereço.
-- Simulação de formas de pagamento.
-- Confirmação de pedido.
-- Interface responsiva para celulares e computadores.
+- Simulação de pagamento e confirmação de pedido.
+- Interface responsiva para computadores e celulares.
 
-## 🛠️ Tecnologias
+## 🛠️ Tecnologias utilizadas
 
 **Frontend:** React, TypeScript, Vite e SCSS.
 
 **Backend:** Node.js, PostgreSQL e API REST.
 
-## 🚀 Como executar
+## 🌐 Demonstração
 
-### Pré-requisitos
-
-- Node.js
-- npm
-- PostgreSQL
-
-### Instalar dependências
-
-Execute na pasta principal do projeto:
-
-    npm.cmd --prefix frontend install
-    npm.cmd --prefix backend install
-
-### Configurar o ambiente
-
-Utilize o arquivo `.env.example` como referência para criar seu `.env` na raiz do projeto.
-
-Configure as conexões com o PostgreSQL e siga as instruções em `backend/README.md` para preparar o banco de dados.
-
-Nunca publique senhas, tokens ou arquivos `.env`.
-
-### Iniciar o backend
-
-    node --env-file=.env backend/src/server.mjs
-
-### Iniciar o frontend
-
-Em outro terminal:
-
-    npm.cmd --prefix frontend run dev
-
-Acesse o endereço local informado pelo Vite.
-
-## 💳 Pagamentos
-
-O checkout funciona em modo demonstrativo. Nenhuma cobrança real é realizada e dados de cartão não são armazenados.
-
-## 📱 Responsividade
-
-Interface adaptada para dispositivos móveis e computadores.
+Link de acesso: em breve.
 
 ## 👩‍💻 Desenvolvedora
 
-**Érica Gomes — Front-End Developer**
+**Érica Gomes**
 
-[GitHub: ericagomes-dev](https://github.com/ericagomes-dev)
+Desenvolvimento Front-End | UX/UI | Desenvolvimento Web
+
+[GitHub – ericagomes-dev](https://github.com/ericagomes-dev)
 
 ---
 
-Projeto desenvolvido para fins de estudo e portfólio.
+Projeto desenvolvido para portfólio e demonstração de habilidades em desenvolvimento web.
