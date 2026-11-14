@@ -37,11 +37,9 @@ export function CartDrawer({
   const [changeFor, setChangeFor] = useState('')
   const [changeError, setChangeError] = useState('')
   const [checkoutError, setCheckoutError] = useState('')
-  const [checkoutOrderId, setCheckoutOrderId] = useState<string | null>(null)
-  const [serverTotal, setServerTotal] = useState<number | null>(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [checkoutComplete, setCheckoutComplete] = useState(false)
+  const [simulationTotal, setSimulationTotal] = useState<number | null>(null)
 
-  const idempotencyKey = useRef<string | null>(null)
   const dialogRef = useRef<HTMLElement>(null)
 
   useDialogFocus(dialogRef, onClose)
@@ -63,7 +61,7 @@ export function CartDrawer({
 
   const total = subtotal + fee
 
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
+  const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     setChangeError('')
@@ -74,54 +72,13 @@ export function CartDrawer({
       return
     }
 
-    const formData = new FormData(event.currentTarget)
-
-    const getValue = (name: string) =>
-      String(formData.get(name) ?? '').trim()
-
-    const name = getValue('name')
-    const phone = getValue('phone')
-    const address = getValue('address')
-    const phoneDigits = phone.replace(/\D/g, '')
-
-    // Não permite carrinho vazio
     if (!lines.length) {
       setCheckoutError(
-        'Seu carrinho está vazio. Adicione um produto antes de continuar.',
+        'Seu carrinho está vazio. Adicione um produto para fazer a simulação.',
       )
       return
     }
 
-    // Validação do nome
-    if (name.length < 2) {
-      setCheckoutError('Informe seu nome corretamente.')
-      return
-    }
-
-    // Validação do telefone com DDD
-    if (phoneDigits.length !== 10 && phoneDigits.length !== 11) {
-      setCheckoutError(
-        'Telefone inválido. Informe o DDD e o número correto.',
-      )
-      return
-    }
-
-    // Validação do endereço de entrega
-    if (fulfillment === 'delivery') {
-      if (address.length < 5) {
-        setCheckoutError('Informe o endereço completo.')
-        return
-      }
-
-      if (!/\d/.test(address)) {
-        setCheckoutError(
-          'Informe o número do imóvel junto com o endereço.',
-        )
-        return
-      }
-    }
-
-    // Validação das quantidades
     if (
       lines.some(
         (line) =>
@@ -153,86 +110,9 @@ export function CartDrawer({
       }
     }
 
-    const cashChangeForCents =
-      payment === 'dinheiro' && needsChange
-        ? Math.round(Number(changeFor.replace(',', '.')) * 100)
-        : undefined
-
-    if (!idempotencyKey.current) {
-      idempotencyKey.current = crypto.randomUUID()
-    }
-
-    setSubmitting(true)
-
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Idempotency-Key': idempotencyKey.current,
-        },
-        body: JSON.stringify({
-          mode: 'demo',
-          fulfillment,
-          paymentMethod: payment,
-          ...(cashChangeForCents !== undefined
-            ? { cashChangeForCents }
-            : {}),
-          customer: {
-            name,
-            phone,
-            ...(fulfillment === 'delivery'
-              ? {
-                  address,
-                  reference: getValue('reference'),
-                }
-              : {}),
-            notes: getValue('orderNote'),
-          },
-          items: lines.map((line) => ({
-            id: line.productId,
-            quantity: line.quantity,
-            addOnIds: line.addOnIds,
-            removedIngredients: line.removedIngredients,
-            note: line.note,
-          })),
-        }),
-      })
-
-      const result: unknown = await response.json()
-
-      if (
-        !response.ok ||
-        !result ||
-        typeof result !== 'object' ||
-        !('mode' in result) ||
-        result.mode !== 'demo' ||
-        !('paymentStatus' in result) ||
-        result.paymentStatus !== 'not_charged' ||
-        !('orderId' in result) ||
-        typeof result.orderId !== 'string'
-      ) {
-        throw new Error('Não foi possível confirmar o pedido.')
-      }
-
-      setCheckoutOrderId(result.orderId)
-
-      if (
-        'totalCents' in result &&
-        typeof result.totalCents === 'number'
-      ) {
-        setServerTotal(result.totalCents)
-      }
-
-      idempotencyKey.current = null
-      onClear()
-    } catch {
-      setCheckoutError(
-        'Não foi possível confirmar o pedido. Tente novamente sem fechar esta tela.',
-      )
-    } finally {
-      setSubmitting(false)
-    }
+    setSimulationTotal(total)
+    setCheckoutComplete(true)
+    onClear()
   }
 
   return (
@@ -278,20 +158,18 @@ export function CartDrawer({
           </button>
         </div>
 
-        {checkoutOrderId ? (
+        {checkoutComplete ? (
           <div className="cart-empty cart-order-success">
             <span aria-hidden="true">✓</span>
 
-            <h3>Pedido registrado!</h3>
+            <h3>Simulação concluída!</h3>
 
-            <p>Pedido {checkoutOrderId}</p>
-
-            {serverTotal !== null && (
-              <p>Total registrado: {formatPrice(serverTotal)}</p>
+            {simulationTotal !== null && (
+              <p>Total simulado: {formatPrice(simulationTotal)}</p>
             )}
 
             <p className="success-payment-notice">
-              Nenhum pagamento foi realizado. Esta é uma confirmação demonstrativa.
+              Nenhum pedido foi enviado ou registrado, e nenhum pagamento foi realizado.
             </p>
 
             <button
@@ -455,78 +333,13 @@ export function CartDrawer({
               </div>
 
               <h3 className="checkout-subheading">
-                Checkout demonstrativo
+                Finalizar demonstração
               </h3>
 
               <p className="checkout-local-notice">
-                Os dados informados serão enviados à API local para
-                registrar o pedido demonstrativo.
+                Simulação local: nenhuma informação é enviada e nenhum pedido é
+                salvo. Não informe dados pessoais reais.
               </p>
-
-              <label>
-                Nome
-                <input
-                  name="name"
-                  autoComplete="name"
-                  required
-                  minLength={2}
-                  maxLength={120}
-                  placeholder="Como podemos te chamar?"
-                />
-              </label>
-
-              <label>
-                Telefone
-                <input
-                  name="phone"
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel"
-                onChange={(event) => {
-                  event.target.value = event.target.value.replace(/\D/g, '').slice(0, 11)
-                }}
-                  required
-                  maxLength={11}
-                  pattern="[0-9]{10,11}"
-                  title="Informe um telefone válido com DDD."
-                  placeholder="(21) 99999-9999"
-                />
-              </label>
-
-              {fulfillment === 'delivery' && (
-                <div className="address-fields">
-                  <label>
-                    Endereço
-                    <input
-                      name="address"
-                      autoComplete="street-address"
-                      required
-                      minLength={5}
-                      maxLength={300}
-                      placeholder="Rua, número e complemento"
-                    />
-                  </label>
-
-                  <label>
-                    Referência (opcional)
-                    <input
-                      name="reference"
-                      maxLength={180}
-                      placeholder="Perto de..."
-                    />
-                  </label>
-                </div>
-              )}
-
-              <label>
-                Observações do pedido
-                <textarea
-                  name="orderNote"
-                  rows={2}
-                  maxLength={240}
-                  placeholder="Alguma orientação para este pedido?"
-                />
-              </label>
 
               <label>
                 Forma de pagamento
@@ -687,11 +500,10 @@ export function CartDrawer({
 
               <p className="demo-warning">
                 <strong>
-                  Projeto demonstrativo: nenhum pagamento real será realizado.
+                  Versão demonstrativa: nenhum pagamento ou pedido real será realizado.
                 </strong>
                 {' '}
-                Não são solicitados dados de cartão e nenhum pedido será
-                enviado a uma cozinha ou estabelecimento.
+                As opções de Pix, cartão e dinheiro são apenas ilustrativas.
               </p>
 
               {checkoutError && (
@@ -703,16 +515,9 @@ export function CartDrawer({
               <button
                 className="button button-orange checkout-submit"
                 type="submit"
-                disabled={submitting}
-                aria-busy={submitting}
               >
-                {submitting
-                  ? 'REGISTRANDO PEDIDO…'
-                  : `REGISTRAR PEDIDO · ${formatPrice(total)}`}
-
-                {!submitting && (
-                  <span aria-hidden="true">↗</span>
-                )}
+                {`SIMULAR PEDIDO · ${formatPrice(total)}`}
+                <span aria-hidden="true">↗</span>
               </button>
             </form>
           </>

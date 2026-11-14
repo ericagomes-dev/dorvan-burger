@@ -1,5 +1,8 @@
 
-@'
+$black: #171717;
+$orange: #F26A21;
+$cream: #F5F1E8;
+$white: #fff;
 
 /* =====================================
    PAGAMENTOS DEMONSTRATIVOS - DORVAN
@@ -165,6 +168,3 @@
 }
 
 /* QR ilustrativo: não é um código Pix pagável. */
-'@ | Add-Content -Path ".\frontend\src\styles\app.scss" -Encoding utf8
-
-Write-Host "Estilos de pagamento adicionados!"

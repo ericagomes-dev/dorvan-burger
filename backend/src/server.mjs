@@ -27,7 +27,7 @@ function containsCardData(value) {
   })
 }
 
-function sendJson(response, statusCode, body) {
+function sendJson(response, statusCode, body, origin = null) {
   response.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
@@ -36,6 +36,8 @@ function sendJson(response, statusCode, body) {
     'X-Frame-Options': 'DENY',
     'X-Permitted-Cross-Domain-Policies': 'none',
     'Cross-Origin-Resource-Policy': 'same-origin',
+    'Vary': 'Origin',
+    ...(origin ? { 'Access-Control-Allow-Origin': origin } : {}),
   })
   response.end(JSON.stringify(body))
 }
@@ -487,6 +489,9 @@ async function createOrder(pool, payload, idempotencyKey) {
 
 export function createApiServer({ env = process.env, pool = null } = {}) {
   const policy = resolvePaymentsPolicy(env)
+  const allowedOrigin = typeof env.CORS_ORIGIN === 'string'
+    ? env.CORS_ORIGIN.trim()
+    : ''
 
   return createServer(async (request, response) => {
     let pathname
@@ -497,8 +502,33 @@ export function createApiServer({ env = process.env, pool = null } = {}) {
       return sendJson(response, 400, { error: 'Invalid request URL.' })
     }
 
+    const requestOrigin = request.headers.origin
+    const corsOrigin = requestOrigin && requestOrigin === allowedOrigin
+      ? requestOrigin
+      : null
+    const send = (statusCode, body) => sendJson(response, statusCode, body, corsOrigin)
+
+    if (requestOrigin && allowedOrigin && !corsOrigin) {
+      return send(403, { error: 'Origin not allowed.' })
+    }
+
+    if (request.method === 'OPTIONS' && pathname.startsWith('/api/')) {
+      if (!corsOrigin) {
+        return send(403, { error: 'Origin not allowed.' })
+      }
+
+      response.writeHead(204, {
+        'Access-Control-Allow-Origin': corsOrigin,
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Idempotency-Key',
+        'Access-Control-Max-Age': '600',
+        'Vary': 'Origin',
+      })
+      return response.end()
+    }
+
     if (request.method === 'GET' && pathname === '/api/payments/status') {
-      return sendJson(response, 200, {
+      return send(200, {
         mode: 'demo',
         realPaymentsEnabled: false,
         message: DEMO_NOTICE,
@@ -510,7 +540,7 @@ export function createApiServer({ env = process.env, pool = null } = {}) {
         const payload = await readJson(request)
 
         if (containsCardData(payload)) {
-          return sendJson(response, 400, {
+          return send(400, {
             error: 'Card data is not accepted in demo mode.',
           })
         }
@@ -518,13 +548,13 @@ export function createApiServer({ env = process.env, pool = null } = {}) {
         const idempotencyKey = request.headers['idempotency-key']
 
         if (!validateCheckout(payload, idempotencyKey)) {
-          return sendJson(response, 400, {
+          return send(400, {
             error: 'Invalid demo checkout request.',
           })
         }
 
         if (!pool) {
-          return sendJson(response, 503, {
+          return send(503, {
             error: 'Order database is unavailable.',
           })
         }
@@ -532,7 +562,7 @@ export function createApiServer({ env = process.env, pool = null } = {}) {
         const existingOrder = await findExistingOrder(pool, idempotencyKey)
 
         if (existingOrder) {
-          return sendJson(response, 200, {
+          return send(200, {
             mode: 'demo',
             orderType: 'demo',
             orderId: existingOrder,
@@ -550,7 +580,7 @@ export function createApiServer({ env = process.env, pool = null } = {}) {
             const duplicate = await findExistingOrder(pool, idempotencyKey)
 
             if (duplicate) {
-              return sendJson(response, 200, {
+              return send(200, {
                 mode: 'demo',
                 orderType: 'demo',
                 orderId: duplicate,
@@ -563,7 +593,7 @@ export function createApiServer({ env = process.env, pool = null } = {}) {
           throw error
         }
 
-        return sendJson(response, 201, {
+        return send(201, {
           mode: 'demo',
           orderType: 'demo',
           orderId: order.orderId,
@@ -577,7 +607,7 @@ export function createApiServer({ env = process.env, pool = null } = {}) {
         })
       } catch (error) {
         if (error.statusCode) {
-          return sendJson(response, error.statusCode, {
+          return send(error.statusCode, {
             error: error.statusCode === 413
               ? 'Request body too large.'
               : error.statusCode === 503
@@ -586,7 +616,7 @@ export function createApiServer({ env = process.env, pool = null } = {}) {
           })
         }
 
-        return sendJson(response, 500, {
+        return send(500, {
           error: 'Unable to register demo order.',
         })
       }
@@ -598,14 +628,14 @@ export function createApiServer({ env = process.env, pool = null } = {}) {
         ? PRODUCTION_BLOCKED_NOTICE
         : DEMO_NOTICE
 
-      return sendJson(response, status, {
+      return send(status, {
         mode: 'demo',
         realPaymentsEnabled: false,
         error: message,
       })
     }
 
-    return sendJson(response, 404, { error: 'Not found.' })
+    return send(404, { error: 'Not found.' })
   })
 }
 
@@ -621,9 +651,11 @@ if (isDirectExecution) {
 
   const pool = await createDatabasePool()
   const server = createApiServer({ pool })
+  const host = process.env.HOST
+    || (process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1')
 
-  server.listen(port, '127.0.0.1', () => {
-    console.log(`Dorvan demo API listening on http://127.0.0.1:${port}`)
+  server.listen(port, host, () => {
+    console.log(`Dorvan demo API listening on port ${port} (${host})`)
 
     if (resolvePaymentsPolicy(process.env).productionBlocked) {
       console.warn(PRODUCTION_BLOCKED_NOTICE)

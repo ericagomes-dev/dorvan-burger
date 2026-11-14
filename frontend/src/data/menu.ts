@@ -16,7 +16,8 @@ export type MenuProduct = {
 export type AddOn = { id: string; name: string; priceCents: number; group: 'Extra' | 'Molho'; image?: string }
 export type CartLine = { key: string; productId: string; quantity: number; addOnIds: string[]; removedIngredients: string[]; note: string }
 
-const image = (filename: string) => `/images/${encodeURIComponent(filename)}`
+const image = (filename: string) =>
+  `${import.meta.env.BASE_URL}images/${encodeURIComponent(filename)}`
 
 export const images = {
   logo: image('logo-dorvan-burger.png'),

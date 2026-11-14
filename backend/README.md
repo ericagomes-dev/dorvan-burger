@@ -92,3 +92,25 @@ database, and it refuses non-loopback hosts or any other database name.
 Take backups per installation and test restoration before upgrades. Prefer a
 reviewed forward migration over dropping tables or rebuilding a database that
 already contains orders or customer data.
+
+## Hosted demo API
+
+Use a Node.js service with Node `>=22.9`. Set `NODE_ENV=production`,
+`PAYMENTS_MODE=demo`, the runtime `DATABASE_URL`, and `DATABASE_SSL=require`.
+Configure `DATABASE_MIGRATION_URL` separately for the release/migration step;
+do not give the running application the migration role. The process uses the
+platform's `PORT` and binds `0.0.0.0` by default in production. A hosting check can use
+`GET /api/payments/status` to verify that the API process responds; this endpoint
+does not verify database connectivity.
+
+When the frontend and API use different origins, set `CORS_ORIGIN` to the exact
+HTTPS frontend origin (scheme and host, without a path or trailing slash).
+Only that origin is allowed. If the frontend host routes `/api/*` to this
+service on the same origin, leave `CORS_ORIGIN` empty. Keep HTTPS enabled on
+both public services.
+
+Provision a new dedicated PostgreSQL database before applying this baseline.
+Never point this migration runner at a database with already-applied migrations
+from another baseline; the checksum guard intentionally rejects changed
+migrations. Keep all payment settings in demo mode and do not configure payment
+credentials.

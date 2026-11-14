@@ -13,6 +13,11 @@ import { createDatabasePool } from '../src/db/pool.mjs'
 import { createApiServer } from '../src/server.mjs'
 
 const projectRoot = resolve(import.meta.dirname, '../..')
+const databaseTestOptions = {
+  skip: process.env.TEST_DATABASE_URL
+    ? false
+    : 'Set TEST_DATABASE_URL to the dedicated local dorvan_phase1_test database.',
+}
 
 function getTestDatabaseUrl() {
   const value = process.env.TEST_DATABASE_URL
@@ -169,7 +174,7 @@ test('checkout without a database does not create a fake order', async () => {
   })
 })
 
-test('demo checkout persists an order and calculates its total using database prices', async () => {
+test('demo checkout persists an order and calculates its total using database prices', databaseTestOptions, async () => {
   await withApi(
     {},
     async (baseUrl, pool) => {
@@ -264,7 +269,7 @@ test('demo checkout persists an order and calculates its total using database pr
   )
 })
 
-test('repeating the same idempotency key does not create a second order', async () => {
+test('repeating the same idempotency key does not create a second order', databaseTestOptions, async () => {
   await withApi(
     {},
     async (baseUrl, pool) => {
@@ -448,6 +453,39 @@ test('payment status is read-only and always reports demo in this release', asyn
   )
 })
 
+test('configured CORS permits only the exact frontend origin and its API preflight', async () => {
+  const allowedOrigin = 'https://dorvan.example'
+
+  await withApi({ CORS_ORIGIN: allowedOrigin }, async (baseUrl) => {
+    const allowed = await fetch(`${baseUrl}/api/payments/status`, {
+      headers: { Origin: allowedOrigin },
+    })
+    assert.equal(allowed.status, 200)
+    assert.equal(allowed.headers.get('access-control-allow-origin'), allowedOrigin)
+
+    const denied = await fetch(`${baseUrl}/api/payments/status`, {
+      headers: { Origin: 'https://other.example' },
+    })
+    assert.equal(denied.status, 403)
+    assert.equal(denied.headers.get('access-control-allow-origin'), null)
+
+    const preflight = await fetch(`${baseUrl}/api/checkout`, {
+      method: 'OPTIONS',
+      headers: {
+        Origin: allowedOrigin,
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'content-type,idempotency-key',
+      },
+    })
+    assert.equal(preflight.status, 204)
+    assert.equal(preflight.headers.get('access-control-allow-origin'), allowedOrigin)
+    assert.equal(
+      preflight.headers.get('access-control-allow-headers'),
+      'Content-Type, Idempotency-Key',
+    )
+  })
+})
+
 test('demo API rejects card data instead of processing or retaining it', async () => {
   await withApi({}, async (baseUrl) => {
     const response = await jsonPost(`${baseUrl}/api/checkout`, {
@@ -463,17 +501,23 @@ test('demo API rejects card data instead of processing or retaining it', async (
   })
 })
 
-test('frontend states the demo-only rule and contains neither card fields nor payment secrets', () => {
+test('static checkout remains local and does not collect personal or card data', () => {
   const cartSource = readFileSync(
     join(projectRoot, 'frontend/src/components/CartDrawer.tsx'),
     'utf8',
   )
 
-  assert.ok(cartSource.includes(DEMO_NOTICE))
+  assert.match(cartSource, /Versão demonstrativa: nenhum pagamento ou pedido real será realizado\./)
+  assert.match(cartSource, /nenhuma informação é enviada/)
+  assert.doesNotMatch(cartSource, /\bfetch\s*\(/i)
 
   assert.doesNotMatch(
     cartSource,
     /name=["'](?:cardNumber|cardholder|securityCode|cvv|cvc)["']/i,
+  )
+  assert.doesNotMatch(
+    cartSource,
+    /name=["'](?:name|phone|address|reference|orderNote)["']/i,
   )
 
   const collectSources = (directory) =>
@@ -495,6 +539,22 @@ test('frontend states the demo-only rule and contains neither card fields nor pa
     frontendSources,
     /MP_ACCESS_TOKEN|MP_WEBHOOK_SECRET|VITE_PAYMENTS_MODE|PAYMENTS_MODE/i,
   )
+})
+
+test('GitHub Pages deployment builds the project-base frontend artifact', () => {
+  const viteConfig = readFileSync(join(projectRoot, 'frontend/vite.config.ts'), 'utf8')
+  const menuSource = readFileSync(join(projectRoot, 'frontend/src/data/menu.ts'), 'utf8')
+  const htmlSource = readFileSync(join(projectRoot, 'frontend/index.html'), 'utf8')
+  const workflow = readFileSync(join(projectRoot, '.github/workflows/deploy.yml'), 'utf8')
+
+  assert.match(viteConfig, /base:\s*['"]\/dorvan-burger\/['"]/)
+  assert.match(menuSource, /import\.meta\.env\.BASE_URL/)
+  assert.match(htmlSource, /%BASE_URL%images\/logo-dorvan-burger\.png/)
+  assert.match(workflow, /branches:\s*\n\s+- master/)
+  assert.match(workflow, /pages:\s*write/)
+  assert.match(workflow, /id-token:\s*write/)
+  assert.match(workflow, /path:\s*frontend\/dist/)
+  assert.match(workflow, /actions\/deploy-pages@v4/)
 })
 
 test('environment example contains only demo mode and no credential values', () => {

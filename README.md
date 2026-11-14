@@ -1,37 +1,73 @@
-﻿# 🍔 Dorvan Burger
+﻿# Dorvan Burger
 
-Uma experiência digital de hamburgueria que une praticidade, tecnologia e uma experiência de compra intuitiva.
+## Acessar demonstração online
 
-O Dorvan Burger é um projeto web com cardápio interativo, personalização de produtos e sistema de pedidos online, desenvolvido com foco em responsividade e experiência do usuário (UX/UI).
+**Endereço previsto:** [https://ericagomes-dev.github.io/dorvan-burger/](https://ericagomes-dev.github.io/dorvan-burger/)
 
-## ✨ Funcionalidades
+O endereço só estará disponível depois que o workflow do GitHub Pages concluir
+a publicação. Esta versão é demonstrativa: não processa pagamentos nem envia
+ou registra pedidos reais.
 
-- Cardápio digital organizado por categorias.
-- Apresentação visual dos produtos.
-- Personalização de hambúrgueres e acompanhamentos.
-- Carrinho de compras interativo.
-- Checkout com dados do cliente e endereço.
-- Simulação de pagamento e confirmação de pedido.
-- Interface responsiva para computadores e celulares.
+Cardápio digital com personalização de produtos, carrinho e checkout local
+demonstrativo, feito com React, TypeScript, Vite e SCSS. O backend Node.js e
+PostgreSQL é mantido para uma futura versão completa e não é necessário para
+esta demonstração estática.
 
-## 🛠️ Tecnologias utilizadas
+## Funcionalidades
 
-**Frontend:** React, TypeScript, Vite e SCSS.
+- Cardápio por categorias, com imagens e layout responsivo.
+- Personalização de ingredientes, adicionais e observações.
+- Carrinho com edição de itens e cálculo demonstrativo de totais no navegador.
+- Checkout demonstrativo sem enviar dados, gravar pedidos ou iniciar cobranças.
 
-**Backend:** Node.js, PostgreSQL e API REST.
+O carrinho e as personalizações são mantidos localmente no navegador. Não
+informe dados pessoais reais; as opções de Pix, cartão e dinheiro são
+ilustrativas e não aceitam pagamento.
 
-## 🌐 Demonstração
+## Executar localmente
 
-Link de acesso: em breve.
+Requisito: Node.js 22 ou superior. A demonstração estática não depende do
+backend nem de PostgreSQL.
 
-## 👩‍💻 Desenvolvedora
+```powershell
+cd frontend
+npm ci
+npm run dev
+```
 
-**Érica Gomes**
+Consulte [frontend/README.md](./frontend/README.md) para build e detalhes da
+publicação no GitHub Pages. O backend preservado para a versão futura está
+documentado em [backend/README.md](./backend/README.md).
 
-Desenvolvimento Front-End | UX/UI | Desenvolvimento Web
+## Verificações
 
-[GitHub – ericagomes-dev](https://github.com/ericagomes-dev)
+```powershell
+cd frontend
+npm ci
+npm run lint
+npm run build
+```
 
----
+Os testes do backend podem ser executados separadamente em `backend`; os que
+verificam persistência exigem `TEST_DATABASE_URL` para a base de testes local.
 
-Projeto desenvolvido para portfólio e demonstração de habilidades em desenvolvimento web.
+## Publicação
+
+O workflow [.github/workflows/deploy.yml](./.github/workflows/deploy.yml)
+compila `frontend` e publica `frontend/dist` no GitHub Pages quando há push
+para `master`. Nas configurações do repositório, selecione **Settings >
+Pages > Build and deployment > Source: GitHub Actions**. O link previsto só
+deve ser anunciado depois de uma execução de deploy bem-sucedida e da validação
+do site e da navegação em dispositivos móveis.
+
+Não publique `.env`, senhas, tokens ou credenciais. O frontend estático não
+precisa de secrets nem se conecta ao backend.
+
+## Tecnologias
+
+- Frontend: React, TypeScript, Vite e SCSS.
+- Backend futuro: Node.js, API HTTP e PostgreSQL.
+
+## Autoria
+
+**Érica Gomes** · [GitHub – ericagomes-dev](https://github.com/ericagomes-dev)
