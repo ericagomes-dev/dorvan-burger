@@ -969,3 +969,37 @@ button,
     height: auto;
   }
 }
+
+
+/* Padrao unico de cantos e movimento suave nas fotos do cardapio */
+.product-card .product-image {
+  border-radius: 10px !important;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.product-card .product-image img,
+.product-card .product-image .image-fallback {
+  border-radius: 0 !important;
+  transition: transform 300ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover .product-image {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 26px rgba(23, 23, 23, .18);
+  }
+
+  .product-card:hover .product-image img {
+    transform: scale(1.045);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card .product-image,
+  .product-card .product-image img,
+  .product-card .product-image .image-fallback {
+    transition: none;
+  }
+}
