@@ -905,3 +905,25 @@ button,
     overflow-wrap: anywhere;
   }
 }
+
+
+/* Redmi: menu hambúrguer alinhado ao lado da marca */
+@media (max-width: 620px) {
+  .topbar {
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .topbar > .wordmark {
+    flex: 0 0 auto;
+  }
+
+  .mobile-menu-toggle {
+    flex: 0 0 44px;
+    margin-left: 0;
+  }
+
+  .header-actions {
+    margin-left: auto;
+  }
+}
