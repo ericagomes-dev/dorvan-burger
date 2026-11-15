@@ -1,73 +1,85 @@
-﻿# Dorvan Burger
+# Dorvan Burger
 
-## Acessar demonstração online
+Cardápio digital de uma hamburgueria fictícia, desenvolvido como projeto de portfólio para demonstrar uma experiência de compra simples, responsiva e intuitiva.
 
-**Endereço previsto:** [https://ericagomes-dev.github.io/dorvan-burger/](https://ericagomes-dev.github.io/dorvan-burger/)
+<p align="center">
+  <a href="https://ericagomes-dev.github.io/dorvan-burger/"><strong>🍔 Acessar demonstração online</strong></a>
+</p>
 
-O endereço só estará disponível depois que o workflow do GitHub Pages concluir
-a publicação. Esta versão é demonstrativa: não processa pagamentos nem envia
-ou registra pedidos reais.
+> **Aviso:** esta é uma demonstração. O carrinho e o checkout são simulados no navegador. Nenhum pedido é enviado ou registrado e nenhum pagamento é processado.
 
-Cardápio digital com personalização de produtos, carrinho e checkout local
-demonstrativo, feito com React, TypeScript, Vite e SCSS. O backend Node.js e
-PostgreSQL é mantido para uma futura versão completa e não é necessário para
-esta demonstração estática.
+## Visão geral
 
-## Funcionalidades
+A interface permite explorar o cardápio, personalizar produtos e revisar um pedido em um fluxo demonstrativo.
 
-- Cardápio por categorias, com imagens e layout responsivo.
+### Funcionalidades
+
+- Cardápio organizado por categorias.
 - Personalização de ingredientes, adicionais e observações.
-- Carrinho com edição de itens e cálculo demonstrativo de totais no navegador.
-- Checkout demonstrativo sem enviar dados, gravar pedidos ou iniciar cobranças.
+- Carrinho com edição de itens e cálculo do total.
+- Checkout demonstrativo com opções ilustrativas de pagamento.
+- Interface responsiva para computadores e dispositivos móveis.
 
-O carrinho e as personalizações são mantidos localmente no navegador. Não
-informe dados pessoais reais; as opções de Pix, cartão e dinheiro são
-ilustrativas e não aceitam pagamento.
+## Tecnologias
+
+**Frontend**
+- React
+- TypeScript
+- Vite
+- SCSS
+
+**Backend (base para evolução futura)**
+- Node.js
+- PostgreSQL
+
+O backend é mantido no repositório para uma futura versão completa. Ele não é necessário para executar a demonstração online.
 
 ## Executar localmente
 
-Requisito: Node.js 22 ou superior. A demonstração estática não depende do
-backend nem de PostgreSQL.
+**Requisito:** Node.js 22 ou superior.
 
-```powershell
+No terminal, execute:
+
+```bash
 cd frontend
 npm ci
 npm run dev
 ```
 
-Consulte [frontend/README.md](./frontend/README.md) para build e detalhes da
-publicação no GitHub Pages. O backend preservado para a versão futura está
-documentado em [backend/README.md](./backend/README.md).
+O Vite exibirá o endereço local para abrir o projeto no navegador.
 
-## Verificações
+### Verificar e gerar a versão de produção
 
-```powershell
-cd frontend
-npm ci
+Ainda na pasta `frontend`:
+
+```bash
 npm run lint
 npm run build
+npm run preview
 ```
 
-Os testes do backend podem ser executados separadamente em `backend`; os que
-verificam persistência exigem `TEST_DATABASE_URL` para a base de testes local.
+Os arquivos gerados ficam na pasta `frontend/dist`.
+
+## Estrutura do projeto
+
+```text
+dorvan-burger/
+├── frontend/       # Aplicação React
+├── backend/        # Base de backend para evolução futura
+└── .github/
+    └── workflows/  # Publicação automática no GitHub Pages
+```
 
 ## Publicação
 
-O workflow [.github/workflows/deploy.yml](./.github/workflows/deploy.yml)
-compila `frontend` e publica `frontend/dist` no GitHub Pages quando há push
-para `master`. Nas configurações do repositório, selecione **Settings >
-Pages > Build and deployment > Source: GitHub Actions**. O link previsto só
-deve ser anunciado depois de uma execução de deploy bem-sucedida e da validação
-do site e da navegação em dispositivos móveis.
+A demonstração é publicada pelo GitHub Pages por meio do workflow de deploy configurado em [\.github/workflows/deploy.yml](./.github/workflows/deploy.yml).
 
-Não publique `.env`, senhas, tokens ou credenciais. O frontend estático não
-precisa de secrets nem se conecta ao backend.
-
-## Tecnologias
-
-- Frontend: React, TypeScript, Vite e SCSS.
-- Backend futuro: Node.js, API HTTP e PostgreSQL.
+**Demonstração:** https://ericagomes-dev.github.io/dorvan-burger/
 
 ## Autoria
 
-**Érica Gomes** · [GitHub – ericagomes-dev](https://github.com/ericagomes-dev)
+**Érica Gomes** — Front-End Developer
+
+- [GitHub](https://github.com/ericagomes-dev)
+- [LinkedIn](https://www.linkedin.com/in/ericagomesdev/)
+- [E-mail](mailto:ericagomesdev@gmail.com)
