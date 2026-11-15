@@ -803,3 +803,60 @@ button,
   color: $black;
   font-size: 16px;
 }
+
+
+/* Crédito profissional da desenvolvedora — rodapé responsivo */
+.developer-credit {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 20px 0 4px;
+  border-top: 1px solid #393734;
+}
+.developer-credit > span {
+  color: $orange;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+.developer-credit > strong {
+  color: $cream;
+  font: 700 25px/1.1 $display;
+  letter-spacing: .2px;
+}
+.developer-credit > p {
+  margin: 0;
+  color: #b7b2aa;
+  font-size: 13px;
+}
+.developer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 5px;
+}
+.developer-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 15px;
+  border: 1px solid #625b52;
+  color: $cream;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.developer-links a:hover {
+  border-color: $orange;
+  background: $orange;
+  color: $black;
+}
+@media (max-width: 620px) {
+  .developer-credit { padding-top: 18px; }
+  .developer-credit > strong { font-size: 23px; }
+  .developer-links { width: 100%; gap: 8px; }
+  .developer-links a { flex: 1 1 auto; justify-content: center; }
+}
