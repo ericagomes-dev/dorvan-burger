@@ -140,21 +140,20 @@ function App() {
 
       <section className="project-story section-pad" id="projeto">
         <div className="project-story-heading">
-          <span className="section-number">03 / SOBRE O PROJETO</span>
-          <h2>MAIS QUE UM CARDÁPIO.<br /><em>UM PROJETO DE PORTFÓLIO.</em></h2>
+          <span className="section-number">03 / PROJETO</span>
+          <h2>TECNOLOGIA COM<br /><em>PROPÓSITO.</em></h2>
         </div>
         <div className="project-story-content">
           <div>
-            <h3>Por que este site foi criado?</h3>
-            <p>O Dorvan Burger é um projeto fictício desenvolvido para demonstrar, na prática, a criação de uma experiência digital para uma hamburgueria: apresentar produtos, facilitar a escolha, permitir personalizações e organizar um pedido em uma interface simples e responsiva.</p>
+            <h3>Objetivo</h3>
+            <p>Projeto de portfólio criado para demonstrar uma experiência digital de hamburgueria, com cardápio, personalização de produtos e carrinho.</p>
           </div>
           <div>
-            <h3>Como foi desenvolvido?</h3>
-            <p>A interface foi construída com React e TypeScript, utilizando Vite para desenvolvimento e build e SCSS para os estilos. O carrinho e as personalizações funcionam localmente no navegador. O projeto foi preparado para publicação estática no GitHub Pages.</p>
+            <h3>Desenvolvimento</h3>
+            <p>Construído com React, TypeScript, Vite e SCSS, com layout responsivo e publicação no GitHub Pages.</p>
           </div>
         </div>
-        <div className="project-tech" aria-label="Tecnologias utilizadas"><span>React</span><span>TypeScript</span><span>Vite</span><span>SCSS</span><span>GitHub Pages</span></div>
-        <p className="project-demo-note">Esta é uma demonstração de portfólio: não recebe pedidos reais, não envia dados pessoais e não processa pagamentos. O backend Node.js e PostgreSQL permanece no repositório para uma futura versão completa.</p>
+        <p className="project-demo-note">Demonstração: pedidos e pagamentos não são reais.</p>
       </section>
 
       <ReviewsSection />
