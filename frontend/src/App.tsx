@@ -137,6 +137,26 @@ function App() {
 
       <section className="about-section section-pad" id="sobre"><div className="about-photo"><SafeImage src={images.interior} alt="Salão e balcão de hamburgueria com iluminação quente" loading="lazy" fallbackClassName="about-photo-fallback" fallback={<span>AMBIENTE DORVAN</span>} /><span>SABOR DE VERDADE</span></div><div className="about-copy"><span className="section-number">02 / SOBRE A DORVAN</span><h2>DA NOSSA CHAPA<br /><em>PRA SUA QUEBRADA</em></h2><p className="about-subtitle">Sabor de verdade. Atitude de sobra.</p><p>Na Dorvan Burger, cada pedido é preparado para quem gosta de hambúrguer bem feito, acompanhamentos caprichados e aquele sabor que dá vontade de repetir.</p><div className="about-points"><span><b>01</b> Hambúrguer preparado na chapa.</span><span><b>02</b> Entrega e retirada com praticidade.</span><span><b>03</b> Combinações para todos os apetites.</span><span><b>04</b> Sabor e qualidade em cada pedido.</span></div></div></section>
 
+
+      <section className="project-story section-pad" id="projeto">
+        <div className="project-story-heading">
+          <span className="section-number">03 / SOBRE O PROJETO</span>
+          <h2>MAIS QUE UM CARDÁPIO.<br /><em>UM PROJETO DE PORTFÓLIO.</em></h2>
+        </div>
+        <div className="project-story-content">
+          <div>
+            <h3>Por que este site foi criado?</h3>
+            <p>O Dorvan Burger é um projeto fictício desenvolvido para demonstrar, na prática, a criação de uma experiência digital para uma hamburgueria: apresentar produtos, facilitar a escolha, permitir personalizações e organizar um pedido em uma interface simples e responsiva.</p>
+          </div>
+          <div>
+            <h3>Como foi desenvolvido?</h3>
+            <p>A interface foi construída com React e TypeScript, utilizando Vite para desenvolvimento e build e SCSS para os estilos. O carrinho e as personalizações funcionam localmente no navegador. O projeto foi preparado para publicação estática no GitHub Pages.</p>
+          </div>
+        </div>
+        <div className="project-tech" aria-label="Tecnologias utilizadas"><span>React</span><span>TypeScript</span><span>Vite</span><span>SCSS</span><span>GitHub Pages</span></div>
+        <p className="project-demo-note">Esta é uma demonstração de portfólio: não recebe pedidos reais, não envia dados pessoais e não processa pagamentos. O backend Node.js e PostgreSQL permanece no repositório para uma futura versão completa.</p>
+      </section>
+
       <ReviewsSection />
       <footer className="footer" id="contato"><a className="wordmark footer-logo" href="#inicio"><SafeImage src={images.logo} alt="Dorvan Burger — Atitude de sobra" fallbackClassName="brand-image-fallback" fallback={<><strong>D<span>.</span></strong><small>DORVAN BURGER</small></>} /></a><div className="footer-contact"><span>ENTREGA E RETIRADA</span><p>Entrega em São Gonçalo.<br />Retirada no local.</p></div><div className="footer-contact"><span>PEDIDOS ONLINE</span><p>Monte seu pedido pelo cardápio e confira os detalhes no carrinho.</p></div><div className="footer-links"><span>NAVEGUE</span><a href="#inicio">Início</a><a href="#cardapio">Cardápio</a><a href="#sobre">Sobre</a><a href="#avaliacoes">Avaliações</a></div><div className="developer-credit"><span>PROJETO DE PORTFÓLIO</span><strong>Desenvolvido por Érica Gomes</strong><p>Front-End Developer</p><div className="developer-links"><a href="mailto:ericagomesdev@gmail.com">E-mail</a><a href="https://github.com/ericagomes-dev" target="_blank" rel="noreferrer">GitHub</a><a href="https://www.linkedin.com/in/ericagomesdev/" target="_blank" rel="noreferrer">LinkedIn</a></div></div><small className="copyright">© 2026 DORVAN BURGER · SABOR DE VERDADE. ATITUDE DE SOBRA.</small></footer>
 
